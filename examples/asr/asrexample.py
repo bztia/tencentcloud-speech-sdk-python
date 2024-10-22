@@ -9,6 +9,7 @@ import json
 sys.path.append("../..")
 from common import credential
 from asr import speech_recognizer
+from common.log import logger
 
 APPID = ""
 SECRET_ID = ""
@@ -68,12 +69,16 @@ def process(id):
     try:
         recognizer.start()
         with open(audio, 'rb') as f:
+            logger.info("start to read audio file: %s" % audio)
             content = f.read(SLICE_SIZE)
             while content:
                 recognizer.write(content)
                 content = f.read(SLICE_SIZE)
+                if not content:
+                    logger.info("end of audio file: %s" % audio)
                 #sleep模拟实际实时语音发送间隔
                 time.sleep(0.02)
+            
     except Exception as e:
         print(e)
     finally:

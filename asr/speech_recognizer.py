@@ -254,6 +254,11 @@ class SpeechRecognizer:
                 logger.info("%s recognition complete" % response['voice_id'])
                 return
             if "result" in response.keys():
+                # JIRA-RTSC-1712: output the result information to log, it's a json string, include:
+                # - slice_type: 0: sentence begin, 1: recognition result change, 2: sentence end
+                # - voice_text_str: the text of the sentence
+                # - word_list: start_time, end_time, word, stable_flag
+                logger.info("%s recognition result: %s" % (response['voice_id'], response['result']))
                 if response["result"]['slice_type'] == 0:
                     self.listener.on_sentence_begin(response)
                     return
